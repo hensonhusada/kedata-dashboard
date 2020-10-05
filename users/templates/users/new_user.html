@@ -1,0 +1,32 @@
+{% extends "base_new.html" %}
+
+{% block title %}
+  Kedata Dashboard - New User
+{% endblock title %}
+
+{% block content %}
+  <h1 class="mt-4">Users Dashboard</h1>
+    <ol class="breadcrumb mb-2">
+      <li class="breadcrumb-item">Users Dashboard</li>
+      <li class="breadcrumb-item active">New User</li>
+    </ol>
+  <div class="row justify-content-center my-4">
+    <div class="col-lg-4 col-md-6 col-sm-8">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title text-center">New User</h3>
+          <form method="post" accept-charset="utf-8" novalidate>
+            {% csrf_token %}
+            {% include 'includes/form.html' %}        
+            <button type="submit" class="btn btn-primary btn-block">Create</button>
+            <input type="hidden" name="next" value="{{next}}">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block scripts %}
+
+{% endblock scripts %}

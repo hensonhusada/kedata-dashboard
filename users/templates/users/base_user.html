@@ -1,0 +1,156 @@
+{% extends "base_new.html" %}
+
+{% load humanize %}
+
+{% block stylesheet %}
+  <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+{% endblock stylesheet %}
+
+{% block content %}
+  <h1 class="mt-4">Users Dashboard</h1>
+  <ol class="breadcrumb mb-2">
+    <li class="breadcrumb-item active">Users Dashboard</li>
+  </ol>
+  <div class="my-2">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Refresh Users</button>
+      <i>Last updated: {{last_updated_time|naturaltime}}</i>
+    </form>     
+  </div>
+
+    <div class="row mb-4">
+      <div class="col-sm">
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-chart-pie mr-1"></i>
+            <b>Subscriptions Chart</b>
+          </div>
+          <div class="card-body">
+            <canvas id="subChart" width="100" height="100"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-chart-area mr-1"></i>
+            <b>Projects Chart</b>
+          </div>
+          <div class="card-body">
+            <canvas id="proChart" width="100" height="100"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="fas fa-table mr-1"></i>
+        <b>Kedata Users</b>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-striped mb-0" id="myTable">
+          <thead class="table-dark">
+            <tr>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Subscription</th>
+              <th>Project</th>
+              <th>Last login</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for kedata_user in user_data %}
+              <tr>
+                <td>{{kedata_user.email}}</td>
+                <td>{{kedata_user.name}}</td>
+                <td>{{kedata_user.subscription}}</td>
+                <td>{{kedata_user.project_name}}</td>
+                <td>{{kedata_user.last_login|naturaltime}}</td>
+                <td><a href="{% url 'users:upgrade_user' kedata_user.email %}">Change Subscription</a></td>
+                <td><a href="{% url 'keyword:keyword' kedata_user.user_id %}">Keywords Used</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>  
+{% endblock content %}
+
+{% block scripts %}
+  <script src="http://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" type="text/javascript"></script>
+  <script>
+    function getRandomColor() {
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    };
+    var sub_config = {
+      type: 'pie',
+      data: {
+        labels: {{ sub_labels|safe }},
+        datasets: [{
+            label: 'Subscriptions',
+            data: {{ sub_datas|safe }},
+            backgroundColor: [
+              'rgb(100, 20, 40)',
+              'rgb(30, 120, 40)',
+              'rgb(50, 50, 80)',
+              'rgb(200, 140, 110)',
+            ],
+        }]
+      },
+      options: {
+        responsive: true,
+      }
+    };
+
+    var pro_config = {
+      type: 'bar',
+      data: {
+        labels: {{ pro_labels|safe }},
+        datasets: [{
+            label: '# number of projects',
+            data: {{ pro_datas|safe }},
+            backgroundColor: [
+              {% for data in pro_labels %}
+                getRandomColor(),
+              {% endfor %}
+            ],
+            borderColor: [],
+            borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        legend: {
+          display: false
+        }
+      }
+    };
+  </script>
+  <script>
+    window.onload = function() {
+      var ctx = document.getElementById('subChart').getContext('2d');
+      var cty = document.getElementById('proChart').getContext('2d');
+      window.subChart = new Chart(ctx, sub_config);
+      window.proChart = new Chart(cty, pro_config);
+    };
+
+    $(document).ready( function () {
+      $('#myTable').DataTable({
+        "columnDefs": [
+          { "searchable": false, "targets": [5, 6]},
+          { "orderable": false, "targets": [5,6]}
+        ]
+      });
+    } );
+  </script>
+{% endblock scripts %}

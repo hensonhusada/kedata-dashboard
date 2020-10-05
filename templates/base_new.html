@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>{% block title %}Kedata Dashboard{% endblock title %}</title>
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+    {% block stylesheet %}
+    {% endblock stylesheet %}
+  </head>
+
+  <body class="sb-nav-fixed">
+    {% block body %}
+      <nav class="sb-topnav navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'users:home' %}">Kedata Dashboard</a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+
+        <div class="navbar-nav ml-auto">
+          {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="float-right btn btn-primary" role="button">Logout</a>            
+          {% endif %}
+        </div>
+
+      </nav>
+
+      <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+          <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <div class="sb-sidenav-menu">
+              <div class="nav">
+                <div class="sb-sidenav-menu-heading">Users</div>
+                <a href="{% url 'users:home' %}" class="nav-link">
+                  <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                   Report
+                </a>
+                <a href="{% url 'users:new_user' %}" class="nav-link">
+                  <div class="sb-nav-link-icon"><i class="far fa-address-card"></i></div>
+                    New User
+                </a>
+                <a href="{% url 'users:upgrade_user_no_email' %}" class="nav-link">
+                  <div class="sb-nav-link-icon"><i class="far fa-arrow-alt-circle-up"></i></div>
+                    Upgrade User
+                </a>
+                <div class="sb-sidenav-menu-heading">Keywords</div>
+                <a href="{% url 'keyword:report' %}" class="nav-link">
+                  <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                    Report
+                </a>
+                <a href="{% url 'keyword:state' %}" class="nav-link">
+                  <div class="sb-nav-link-icon"><i class="fas fa-key"></i></div>
+                    Keyword State
+                </a>
+                <a href="{% url 'keyword:create_issue' %}" class="nav-link">
+                  <div class="sb-nav-link-icon"><i class="fas fa-key"></i></div>
+                    Create Issue
+                </a>
+                <div class="sb-sidenav-menu-heading">Schedule</div>
+                <a href="{% url 'schedule:schedule' %}" class="nav-link">
+                  <div class="sb-nav-link-icon"><i class="far fa-calendar-plus"></i></div>
+                    New Schedule
+                </a>
+                <a href="{% url 'schedule:schedule_list' %}" class="nav-link">
+                  <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
+                    Schedule List
+                </a>
+              </div>
+            </div>
+            <div class="sb-sidenav-footer">
+              <div class="small">Logged in as:</div>
+              {{user}}
+            </div>
+          </nav>
+        </div>
+        <div id="layoutSidenav_content">
+          <main>          
+            <div class="container-fluid">
+
+                {% for message in messages %}
+                  <div class="mt-4 alert {{ message.tags }} alert-dismissable" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>{{ message }}</strong>
+                  </div>
+                {% endfor %}
+                {% block content %}
+                  <h1 class="mt-2">Users Dashboard</h1>
+                {% endblock content %}
+
+            </div>
+          </main>
+          <footer class="py-4 bg-light mt-auto">
+            <div class="container-fluid">
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="text-muted">Copyright &copy; Kedata 2020</div>
+                <div>
+                    <a href="#">Privacy Policy</a>
+                    &middot;
+                    <a href="#">Terms &amp; Conditions</a>
+                </div>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+      
+    {% endblock body %}
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/scripts.js' %}" type="text/javascript" charset="utf-8" async defer></script>
+    {% block scripts %}
+      
+    {% endblock scripts %}
+  </body>
+</html>

@@ -1,0 +1,21 @@
+{% extends "base_accounts.html" %}
+
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-lg-4 col-md-6 col-sm-8">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title text-center">Log in</h3>
+          <form method="post" novalidate>
+            {% csrf_token %}          
+            {% include 'includes/form.html' %}
+            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+            <input type="hidden" name="next" value="{% url 'users:home' %}">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
